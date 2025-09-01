@@ -49,30 +49,26 @@
   </div>
 
   <script>
-    // 구글시트 JSON API (공개 설정 필요)
-    const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRLnBh0XMe-FArg9_VrMc9ophL2c6dM-Im8KTCKMm1TlJ9o6tSwUz5-Vuva-mimmBnRkGqcrg1TwM0E/pubhtml
-";
+    // 구글 시트 CSV URL
+    const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRLnBh0XMe-FArg9_VrMc9ophL2c6dM-Im8KTCKMm1TlJ9o6tSwUz5-Vuva-mimmBnRkGqcrg1TwM0E/pub?output=csv";
 
     let submissions = [];
 
-    // 구글 시트에서 데이터 불러오기
+    // CSV 불러오기
     fetch(sheetUrl)
       .then(res => res.text())
-      .then(text => {
-        const json = JSON.parse(text.substr(47).slice(0, -2)); // 구글시트 JSON 파싱
-        const rows = json.table.rows;
-
-        // 승인된 데이터만 저장
-        submissions = rows
-          .map(r => ({
-            url: r.c[0]?.v,   // 사진 URL
-            place: r.c[1]?.v, // 장소
-            user: r.c[2]?.v,  // 닉네임/인스타
-            approved: r.c[3]?.v // 승인여부
-          }))
-          .filter(item => item.approved === "Y");
+      .then(csv => {
+        const lines = csv.split("\n").slice(1); // 헤더 제외
+        submissions = lines.map(line => {
+          const [url, place, user, approved] = line.split(",");
+          return { url, place, user, approved };
+        }).filter(item => item.approved === "Y");
 
         showRandom(); // 첫 로드 시 표시
+      })
+      .catch(err => {
+        console.error("CSV 불러오기 실패:", err);
+        document.getElementById("meta").innerText = "데이터를 불러오는 데 실패했습니다.";
       });
 
     // 랜덤 표시 함수
