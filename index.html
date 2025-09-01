@@ -46,14 +46,23 @@
       // 여기에 추가...
     ];
 
-    function showRandomPhoto() {
-      const randomIndex = Math.floor(Math.random() * images.length);
-      document.getElementById("randomPhoto").src = images[randomIndex];
-    }
+let lastIndex = -1; // 이전 사진 인덱스 저장
 
-    // 페이지 로드 시 처음 사진 표시
-    showRandomPhoto();
-  </script>
+  function showRandomPhoto() {
+    let randomIndex;
+
+    // 이전 사진과 동일한 인덱스면 다시 뽑기
+    do {
+      randomIndex = Math.floor(Math.random() * images.length);
+    } while (randomIndex === lastIndex && images.length > 1);
+
+    document.getElementById("randomPhoto").src = images[randomIndex];
+    lastIndex = randomIndex; // 현재 인덱스를 이전 사진으로 저장
+  }
+
+  // 페이지 로드 시 처음 사진 표시
+  showRandomPhoto();
+</script>
 
 </body>
 </html>
