@@ -7,20 +7,26 @@
   <style>
     body {
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
       height: 100vh;
       background-color: #f0f0f0;
+      font-family: sans-serif;
     }
     img {
       max-width: 90%;
-      max-height: 90%;
+      max-height: 60%;
       border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      margin-bottom: 15px;
+    }
+    #info {
+      text-align: center;
+      font-size: 18px;
+      margin-bottom: 20px;
     }
     button {
-      position: fixed;
-      bottom: 20px;
       padding: 10px 20px;
       font-size: 16px;
       border: none;
@@ -35,34 +41,56 @@
 <body>
 
   <img id="randomPhoto" src="" alt="랜덤 사진">
+  
+  <div id="info">
+    <p id="nickname"></p>
+    <p id="location"></p>
+  </div>
+
   <button onclick="showRandomPhoto()">다른 사진 보기</button>
 
   <script>
-    // 여기 사진 파일 이름을 승인 후 넣으면 됨
+    // 여기에 승인된 Cloudinary 사진 URL + 닉네임 + 장소 입력
     const images = [
-     "img/별냥이 마을에서 식사2.png",
-     "img/나루터.png",
-     "img/123.png"
-      // 여기에 추가...
+      {
+        url: "https://res.cloudinary.com/di0yo8sa6/image/upload/v1756736489/141a8ab4d5f45dcb_fgu2zo.png",
+        nickname: "민수",
+        location: "꽃"
+      },
+      {
+        url: "https://res.cloudinary.com/di0yo8sa6/image/upload/v1756736489/123_hnaqb4.png",
+        nickname: "지은",
+        location: "123"
+      },
+      {
+        url: "https://res.cloudinary.com/di0yo8sa6/image/upload/v1756736489/40ed0999be9eb82d_py3yif.png",
+        nickname: "영희",
+        location: "해리포터"
+      }
+      // 필요한 만큼 추가 가능
     ];
 
-let lastIndex = -1; // 이전 사진 인덱스 저장
+    let lastIndex = -1;
 
-  function showRandomPhoto() {
-    let randomIndex;
+    function showRandomPhoto() {
+      let randomIndex;
 
-    // 이전 사진과 동일한 인덱스면 다시 뽑기
-    do {
-      randomIndex = Math.floor(Math.random() * images.length);
-    } while (randomIndex === lastIndex && images.length > 1);
+      // 이전 사진과 동일하면 다시 선택
+      do {
+        randomIndex = Math.floor(Math.random() * images.length);
+      } while (randomIndex === lastIndex && images.length > 1);
 
-    document.getElementById("randomPhoto").src = images[randomIndex];
-    lastIndex = randomIndex; // 현재 인덱스를 이전 사진으로 저장
-  }
+      const photo = images[randomIndex];
+      document.getElementById("randomPhoto").src = photo.url;
+      document.getElementById("nickname").textContent = photo.nickname;
+      document.getElementById("location").textContent = photo.location;
 
-  // 페이지 로드 시 처음 사진 표시
-  showRandomPhoto();
-</script>
+      lastIndex = randomIndex;
+    }
+
+    // 페이지 로드 시 처음 사진 표시
+    showRandomPhoto();
+  </script>
 
 </body>
 </html>
