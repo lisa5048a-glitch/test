@@ -2,57 +2,58 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>랜덤 추억</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>랜덤 사진</title>
   <style>
-    body { text-align: center; font-family: "Pretendard", sans-serif; margin-top: 50px; background: #fafafa; color: #333; }
-    h1 { margin-bottom: 30px; }
-    img { max-width: 80%; border-radius: 16px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 12px; }
-    .info { font-size: 14px; color: #555; }
-    button { margin-top: 20px; padding: 10px 20px; font-size: 16px; background: #333; color: white; border: none; border-radius: 8px; cursor: pointer; }
-    button:hover { background: #555; }
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f0f0f0;
+    }
+    img {
+      max-width: 90%;
+      max-height: 90%;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    button {
+      position: fixed;
+      bottom: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      background-color: #ff6b6b;
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+    }
   </style>
 </head>
 <body>
-  <h1>랜덤 추억</h1>
-  <div id="container">
-    <img id="photo" src="" alt="랜덤 사진">
-    <div id="meta" class="info"></div>
-    <br>
-    <button onclick="showRandom()">다른 사진 보기</button>
-  </div>
+
+  <img id="randomPhoto" src="" alt="랜덤 사진">
+  <button onclick="showRandomPhoto()">다른 사진 보기</button>
 
   <script>
-    const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRLnBh0XMe-FArg9_VrMc9ophL2c6dM-Im8KTCKMm1TlJ9o6tSwUz5-Vuva-mimmBnRkGqcrg1TwM0E/pub?output=csv";
-    let submissions = [];
+    // 여기 사진 파일 이름을 승인 후 넣으면 됨
+    const images = [
+      "img/photo1.jpg",
+      "img/photo2.jpg",
+      "img/photo3.jpg"
+      // 여기에 추가...
+    ];
 
-    fetch(sheetUrl)
-      .then(res => res.text())
-      .then(csv => {
-        const lines = csv.split("\n").slice(1); // 헤더 제외
-        submissions = lines.map(line => {
-          const [url, place, user, approved] = line.split(",");
-          return { url, place, user, approved };
-        }).filter(item => item.approved === "Y");
-
-        showRandom();
-      })
-      .catch(err => {
-        console.error("CSV 불러오기 실패:", err);
-        document.getElementById("meta").innerText = "데이터를 불러오는 데 실패했습니다.";
-      });
-
-    function showRandom() {
-      if (submissions.length === 0) {
-        document.getElementById("photo").src = "";
-        document.getElementById("meta").innerText = "승인된 사진이 아직 없습니다.";
-        return;
-      }
-      const random = submissions[Math.floor(Math.random() * submissions.length)];
-      document.getElementById("photo").src = random.url;
-      document.getElementById("meta").innerText =
-        (random.place ? `📍 ${random.place} ` : "") +
-        (random.user ? ` | 📸 ${random.user}` : "");
+    function showRandomPhoto() {
+      const randomIndex = Math.floor(Math.random() * images.length);
+      document.getElementById("randomPhoto").src = images[randomIndex];
     }
+
+    // 페이지 로드 시 처음 사진 표시
+    showRandomPhoto();
   </script>
+
 </body>
 </html>
